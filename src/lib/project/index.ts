@@ -1,4 +1,15 @@
+import { QuestionCollection } from "inquirer";
+import { QuestionType } from "../prompts.js";
+
 export const ProjectType = {
+    NODE: "NODE",
+    EXPRESS: "EXPRESS",
+    REACT: "REACT",
+    NEXTJS: "NEXTJS",
+} as const;
+export type ProjectType = keyof typeof ProjectType;
+
+export const ProjectTypeOpts = {
     NODE: {
         name: "Node.JS",
         value: "NODE",
@@ -16,4 +27,11 @@ export const ProjectType = {
         value: "NEXTJS",
     },
 } as const;
-export type ProjectType = keyof typeof ProjectType;
+export type ProjectTypeOpts = typeof ProjectTypeOpts;
+
+export const projectPrompt: QuestionCollection = {
+    message: "Select project",
+    name: QuestionType.PROJECT,
+    type: "list",
+    choices: Object.values(ProjectTypeOpts),
+};
