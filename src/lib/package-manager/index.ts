@@ -26,7 +26,12 @@ export const packageManagerPrompt: QuestionCollection = {
     choices: Object.values(PackageManagerTypeOpts),
 };
 
-export const packageInstall = {
+export const packageInstallCmd: {
+    [P in PackageManagerType]: {
+        install: (packages: string) => string;
+        installDev: (packages: string) => string;
+    };
+} = {
     NPM: {
         install: (packages: string) => `npm install --save ${packages}`,
         installDev: (packages: string) => `npm install -D ${packages}`,

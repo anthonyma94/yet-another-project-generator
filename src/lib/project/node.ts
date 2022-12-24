@@ -1,5 +1,5 @@
 import {
-    packageInstall,
+    packageInstallCmd,
     PackageManagerType,
 } from "../package-manager/index.js";
 import { LanguageType } from "../prompts.js";
@@ -17,6 +17,10 @@ export const parseProject = async (params: {
     await exec("npm init -y");
 
     if (language === "TS") {
-        await exec(packageInstall[manager].installDev("typescript"));
+        await exec(
+            packageInstallCmd[manager].installDev(
+                "typescript @types/node ts-node"
+            )
+        );
     }
 };

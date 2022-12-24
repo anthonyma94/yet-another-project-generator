@@ -19,21 +19,24 @@ dist
 // Main
 
 const argv = yargs(hideBin(process.argv))
-    .usage("Usage: $0 <path>")
-    .command("path", "Path to create project", {
-        path: {
-            description: "Path to create project",
-            string: true,
-        },
-    })
-    .demandCommand(1).argv;
+    .usage(
+        "$0 <path>",
+        "A template builder for popular JavaScript/TypeScript projects.",
+        (yargs) => {
+            return yargs.positional("path", {
+                describe: "The path to build the project",
+                type: "string",
+            });
+        }
+    )
+    .version(false).argv;
 
-const { _ } = await argv;
-const path = _[0] as string;
+const { path } = (await argv) as typeof argv & { path: string };
 
-const cwdPath = join(process.cwd(), path);
+const cwdPath = path.match(/^[\/\\]/) ? path : join(process.cwd(), path);
 
 const exists = fs.existsSync(cwdPath);
+let deleteConfirmed = false;
 
 if (exists) {
     const answer = await inquirer.prompt([
@@ -46,7 +49,7 @@ if (exists) {
     ]);
 
     if (answer.confirm) {
-        await rm(cwdPath, { recursive: true, force: true });
+        deleteConfirmed = true;
     } else {
         process.exit(1);
     }
@@ -58,6 +61,10 @@ const answers = await inquirer.prompt<Record<QuestionType, any>>([
     projectPrompt,
     modulesPrompt,
 ]);
+
+if (deleteConfirmed) {
+    await rm(cwdPath, { recursive: true, force: true });
+}
 
 await mkdir(cwdPath);
 
