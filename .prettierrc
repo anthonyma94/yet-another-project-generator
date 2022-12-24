@@ -1,0 +1,21 @@
+{
+  "tabWidth": 4,
+  "htmlWhitespaceSensitivity": "css",
+  "overrides": [
+    {
+      "files": [
+        "*.yaml",
+        "*.yml",
+        "*.html",
+        "*.jsx",
+        "*.css",
+        "*.tsx",
+        "*.vue",
+        "*.json"
+      ],
+      "options": {
+        "tabWidth": 2
+      }
+    }
+  ]
+}
