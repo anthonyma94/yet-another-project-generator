@@ -1,26 +1,22 @@
-import {
-    packageInstallCmd,
-    PackageManagerType,
-} from "../package-manager/index.js";
-import { LanguageType } from "../prompts.js";
-import { exec as baseExec } from "../utils.js";
+import { stripIndent } from "common-tags";
+import { ParseProjectParamType } from "../types.js";
+import { addDevPackages, addFiles, addPreinstallCmds } from "../utils.js";
 
-export const parseProject = async (params: {
-    language: LanguageType;
-    manager: PackageManagerType;
-    absolutePath: string;
-}) => {
-    const { language, manager, absolutePath: path } = params;
+const gitIgnoreContent = stripIndent`
+node_modules
+`;
 
-    const exec = async (cmd: string) => await baseExec(cmd, { cwd: path });
+export const parseNodeProject = async (params: ParseProjectParamType) => {
+    const { language } = params;
 
-    await exec("npm init -y");
+    addPreinstallCmds("npm init -y");
 
     if (language === "TS") {
-        await exec(
-            packageInstallCmd[manager].installDev(
-                "typescript @types/node ts-node"
-            )
-        );
+        addDevPackages("typescript", "@types/node", "ts-node");
     }
+
+    addFiles(
+        { path: "src/index.ts", content: 'console.log("hello world");' },
+        { path: ".gitignore", content: gitIgnoreContent }
+    );
 };
